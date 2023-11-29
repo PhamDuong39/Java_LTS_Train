@@ -1,6 +1,7 @@
 package com.example.java_train.ServicesImp;
 
 import com.example.java_train.Entities.Product;
+import com.example.java_train.Entities.ProductType;
 import com.example.java_train.Extensions.Mapper.ConvertProductToDTOs;
 import com.example.java_train.Models.CommonModel.Pagination;
 import com.example.java_train.Models.ProductModel.CreateProductModel;
@@ -8,15 +9,19 @@ import com.example.java_train.Models.ProductModel.EditProductModel;
 import com.example.java_train.Models.ProductModel.GetProductModel;
 import com.example.java_train.Repositories.ProductRepository;
 import com.example.java_train.Services.ProductService;
+import jdk.jshell.Snippet;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,21 +40,46 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public ResponseEntity<CreateProductModel> Create(CreateProductModel createProductModel) {
-        return null;
+        Product product = ConvertProductToDTOs.ConvertCreateModelToProduct(createProductModel);
+        _productRepository.save(product);
+        return ResponseEntity.ok(createProductModel);
     }
 
     @Override
     public ResponseEntity<EditProductModel> Edit(EditProductModel editProductModel) {
-        return null;
+        var newProduct = ConvertProductToDTOs.ConvertEditProductModelToProduct(editProductModel);
+        Optional<Product> optional = _productRepository.findById(editProductModel.getId());
+        if(optional.isPresent()){
+            Product existingProduct = optional.get();
+            existingProduct.setProductName(newProduct.getProductName());
+            existingProduct.setPrice(newProduct.getPrice());
+            existingProduct.setDescc(newProduct.getDescc());
+            existingProduct.setNgayHetHan(newProduct.getNgayHetHan());
+
+            _productRepository.save(existingProduct);
+            return ResponseEntity.ok(editProductModel);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @Override
-    public ResponseEntity<GetProductModel> GetById(int productId) {
-        return null;
+    public ResponseEntity<Product> GetById(int productId) {
+        Optional<Product> optional = _productRepository.findById(productId);
+        if(optional.isPresent()) {
+            Product product = optional.get();
+            return ResponseEntity.ok(product);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @Override
     public ResponseEntity<Product> Delete(int productId) {
-        return null;
+        Optional<Product> optional = _productRepository.findById(productId);
+        if(optional.isPresent()) {
+            Product deletedProduct = optional.get();
+            _productRepository.delete(deletedProduct);
+            return ResponseEntity.ok(deletedProduct);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

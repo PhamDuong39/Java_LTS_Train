@@ -11,7 +11,6 @@ import java.time.LocalDate;
 
 public interface ProductRepository extends JpaRepository<Product, Integer> {
 
-
     @Query("select new com.example.java_train.Models.ProductModel.GetProductModel(p.Id, p.ProductName, p.Price, p.Descc, p.NgayHetHan, p.productType.TypeName, p.productType.Id) from Product p")
     Page<GetProductModel> findALlProduct(Pageable pageable);
 }

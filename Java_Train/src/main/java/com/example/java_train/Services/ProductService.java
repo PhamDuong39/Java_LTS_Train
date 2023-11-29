@@ -14,6 +14,6 @@ public interface ProductService {
     ResponseEntity<Page<GetProductModel>> GetProducts(Pagination pagination);
     ResponseEntity<CreateProductModel> Create(CreateProductModel createProductModel);
     ResponseEntity<EditProductModel> Edit(EditProductModel editProductModel);
-    ResponseEntity<GetProductModel> GetById(int productId);
+    ResponseEntity<Product> GetById(int productId);
     ResponseEntity<Product> Delete(int productId);
 }
