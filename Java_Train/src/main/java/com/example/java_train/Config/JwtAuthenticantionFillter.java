@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,10 +21,12 @@ import java.io.IOException;
 @Component  // đánh dấu class là 1 spring bean được quản lý bởi container IoC cua Spring
 @RequiredArgsConstructor // tạo ctor chứa các trường dữ lệu = key final
 public class JwtAuthenticantionFillter extends OncePerRequestFilter {
-    private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
-    private final TokenRepository tokenRepository;
 
+    private final JwtService jwtService;
+
+    private final UserDetailsService userDetailsService;
+
+    private final TokenRepository tokenRepository;
 
     // kiểm tra header của request để lấy token
     @Override
@@ -47,7 +50,6 @@ public class JwtAuthenticantionFillter extends OncePerRequestFilter {
             UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
 
             var isTokenValid = jwtService.IsTokenValid(token, userDetails);
-
 
             // Nếu token hợp lệ -> tạo authenticationToken chứa thông tin user -> lưu vào SecurityContextHolder : đánh dấu đã xác thực
             if(isTokenValid) {

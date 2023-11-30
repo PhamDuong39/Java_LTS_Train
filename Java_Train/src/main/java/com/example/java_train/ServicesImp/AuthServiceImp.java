@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.catalina.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -46,8 +47,22 @@ public class AuthServiceImp implements AuthService {
     }
 
     @Override
-    public ResponseEntity<LoginResponseModel> Login(LoginModel loginModel) {
-        return null;
+    public LoginResponseModel Login(LoginModel loginModel) {
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                new UsernamePasswordAuthenticationToken(loginModel.getEmail(), loginModel.getPassword());
+        authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+
+        var account = accountReposiroty.findByEmail(loginModel.getEmail()).orElseThrow();
+        var refreshToken = jwtService.GenerateRefreshToken(account);
+        var accessToken = jwtService.generateToken(account);
+        // Thu hồi token
+        RevokeAllUserToken(account);
+        SaveAccountRefreshToken(account, refreshToken);
+
+        return LoginResponseModel.builder()
+                .AccessToken(accessToken)
+                .RefreshToken(refreshToken)
+                .build();
     }
 
     @Override
@@ -64,5 +79,17 @@ public class AuthServiceImp implements AuthService {
                 .revoked(false)
                 .build();
         tokenRepository.save(token);
+    }
+
+
+    private void RevokeAllUserToken(Account account) {
+        var validUserTokens = tokenRepository.findAllValidTokenByUser(account.getId());
+        if(validUserTokens.isEmpty()) {
+            return;
+        }
+        for(var token : validUserTokens) {
+            token.setRevoked(true);
+            token.setExpired(true);
+        }
     }
 }

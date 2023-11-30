@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface AuthService {
     LoginResponseModel Register(RegisterModel registerModel);
-    ResponseEntity<LoginResponseModel> Login(LoginModel loginModel);
+    LoginResponseModel Login(LoginModel loginModel);
 
     ResponseEntity<LoginResponseModel> RefreshToken();
 }

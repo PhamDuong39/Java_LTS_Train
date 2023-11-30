@@ -2,6 +2,7 @@ package com.example.java_train.Config;
 
 import com.example.java_train.Repositories.AccountReposiroty;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
+
     private final AccountReposiroty accountReposiroty;
 
     // 2 thằng này thuộc userService

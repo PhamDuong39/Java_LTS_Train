@@ -1,6 +1,7 @@
 package com.example.java_train.Config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -29,9 +30,12 @@ import static org.springframework.http.HttpMethod.*;
 @EnableMethodSecurity   // Sử dụng phân quyền thông qua @PreAuthorize && @PostAuthorize
 public class SecurityConfig {
 
+
     private final AuthenticationProvider authenticationProvider;
+
     private final JwtAuthenticantionFillter jwtAuthenticantionFillter;
 
+    // config URI nào k cần authen
     private static final String[] WHITE_LIST_URL = {"/api/v1/auth/**"};
 
     @Bean

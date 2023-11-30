@@ -1,5 +1,6 @@
 package com.example.java_train.ServicesImp;
 
+import com.example.java_train.Entities.Account;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -18,7 +19,7 @@ import java.util.Map;
 
 @Service
 public class JwtService {
-    private String secretKey = "JWTREFRESHTOKENSECRECTKEY";
+    private String secretKey = "AKDJANVADSNLKAMSKDSMALKDMLSAKNDJKQWNE123141KASMLKEQWMLF";
 
     private long jwtExpiration = 864000;
 
@@ -44,16 +45,17 @@ public class JwtService {
     }
 
     // Tạo access token từ userDetails (Bỏ cũng đc)
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+    public String generateToken(Account account) {
+        return generateToken(new HashMap<>(), account);
     }
 
     // tạo access token từ extra claims và userDetails
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        //extraClaims.put("email", userDetails.getAuthorities());
+    public String generateToken(Map<String, Object> extraClaims, Account account) {
+        extraClaims.put("Role", account.getRole());
+        extraClaims.put("LastName", account.getLastname());
         // có thể thêm nhiều thông tin hơn vào phần extra claim của token
         // nếu không tìm thấy getEmail() -> define thêm bên trong accountRepository
-        return BuildToken(extraClaims, userDetails, jwtExpiration);
+        return BuildToken(extraClaims, account, jwtExpiration);
     }
 
     // tạo refresh token
