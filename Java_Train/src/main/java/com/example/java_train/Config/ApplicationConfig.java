@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class ApplicationConfig {
     private final AccountReposiroty accountReposiroty;
 
+    // 2 thằng này thuộc userService
 
     // UserDetailsService -> cung cấp thông tin user cho Authen (Lấy thông tin thông qua Username)
     @Bean
@@ -25,7 +26,6 @@ public class ApplicationConfig {
         return email -> accountReposiroty.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
-
 
     // DaoAuthenticationProvider -> sử dụng UserDetailsService để lấy thôn tin user + PasswordEncoded để check password
     @Bean

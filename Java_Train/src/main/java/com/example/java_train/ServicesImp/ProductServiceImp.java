@@ -35,6 +35,9 @@ public class ProductServiceImp implements ProductService {
 
         Page<GetProductModel> page = _productRepository.findALlProduct(pageable);
 
+        _productRepository.findAll().forEach((product -> {
+
+        }));
         return ResponseEntity.ok(page);
     }
 

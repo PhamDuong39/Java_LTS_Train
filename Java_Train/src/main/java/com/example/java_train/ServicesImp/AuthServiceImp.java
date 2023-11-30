@@ -31,7 +31,7 @@ public class AuthServiceImp implements AuthService {
                 .firstname(registerModel.getFirstname())
                 .lastname(registerModel.getLastname())
                 .email(registerModel.getEmail())
-                .password(registerModel.getPassword())
+                .password(passwordEncoder.encode(registerModel.getPassword()))
                 .role(registerModel.getRole())
                 .build();
 
